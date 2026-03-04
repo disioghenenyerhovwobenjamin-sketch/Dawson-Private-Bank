@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dawson Private Bank • secure access</title>
+    <!-- Font Awesome 6 (pro feel) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #0b1a2b;
+            background-image: radial-gradient(circle at 70% 10%, rgba(0, 100, 200, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 10% 80%, rgba(150, 100, 255, 0.1) 0%, transparent 40%);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* main container */
+        .bank-enterprise {
+            max-width: 1500px;
+            width: 100%;
+        }
+
+        /* ========== LANDING PAGE ========= */
+        .landing-page {
+            background: rgba(18, 28, 40, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 3rem;
+            padding: 2.5rem;
+            box-shadow: 0 30px 60px -10px #000000b0, 0 0 0 1px rgba(78, 159, 255, 0.25) inset;
+            border: 1px solid rgba(255,215,0,0.2);
+            color: white;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+        .logo-icon {
+            font-size: 3.5rem;
+            color: #f5c542;
+            filter: drop-shadow(0 0 10px #ffbb00);
+        }
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff8e7, #d9ecff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-text .license-badge {
+            background: #1b3857;
+            padding: 4px 18px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            color: #bcd5ff;
+            display: inline-block;
+        }
+
+        .landing-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+        .login-box {
+            flex: 1 1 350px;
+            background: #122b44;
+            border-radius: 2.5rem;
+            padding: 2.5rem;
+            border: 1px solid #4f7eb0;
+        }
+        .login-box h2 { margin-bottom: 1.8rem; color: #f0eac0; }
+        .input-group {
+            background: #1d3855;
+            border-radius: 60px;
+            padding: 0.2rem 0.2rem 0.2rem 1.8rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid #5379a5;
+        }
+        .input-group i { color: #8abdf7; width: 30px; }
+        .input-group input {
+            background: transparent;
+            border: none;
+            padding: 1rem 0.5rem;
+            width: 100%;
+            color: white;
+            outline: none;
+        }
+        .login-btn {
+            background: #1f6fd0;
+            width: 100%;
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 1rem;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .testimony-box {
+            flex: 1 1 300px;
+            background: #0e2137;
+            border-radius: 2rem;
+            padding: 2rem;
+        }
+        .testimony-card {
+            background: #1d3e60;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .license-footer {
+            margin-top: 2rem;
+            display: flex;
+            gap: 20px;
+            color: #a5c6f0;
+            border-top: 1px solid #2f5780;
+            padding-top: 1.5rem;
+        }
+
+        /* ========== 2FA MODAL (login verification) ========= */
+        .twofa-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .twofa-content {
+            background: #112b44;
+            padding: 2.5rem;
+            border-radius: 3rem;
+            max-width: 450px;
+            width: 90%;
+            border: 2px solid gold;
+            color: white;
+        }
+        .code-input {
+            background: #1d3855;
+            border: 1px solid #6c8fb0;
+            border-radius: 60px;
+            padding: 1.2rem;
+            width: 100%;
+            font-size: 1.8rem;
+            text-align: center;
+            letter-spacing: 8px;
+            color: white;
+            margin: 20px 0;
+        }
+
+        /* ========== DASHBOARD (original, enhanced) ========= */
+        .dashboard {
+            background: rgba(18, 28, 40, 0.9);
+            backdrop-filter: blur(16px) saturate(200%);
+            border-radius: 3rem;
+            box-shadow: 0 30px 60px -10px #000000b0, 0 0 0 1px rgba(78, 159, 255, 0.25) inset;
+            padding: 2.2rem 2.5rem;
+            border: 1px solid rgba(255,215,0,0.2);
+            display: none; /* hidden initially */
+        }
+
+        /* license bar, security row etc remain same (copied from earlier) */
+        .license-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f1f32;
+            border-radius: 80px;
+            padding: 0.5rem 2rem 0.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #3e6188;
+        }
+        .fdic-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #f2e9c0;
+        }
+        .fdic-badge i {
+            color: #fedb5f;
+            font-size: 1.6rem;
+        }
+        .license-number {
+            background: #1b3857;
+            padding: 6px 22px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #bcd5ff;
+            border: 1px solid #597da5;
+        }
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .user-greeting h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff8e7, #d9ecff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .user-greeting h1 i {
+            background: #264e7b;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 2rem;
+            margin-right: 15px;
+            color: #ffd966;
+        }
+        .badge {
+            background: #1b3f62;
+            color: white;
+            padding: 0.4rem 1.8rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            border: 1px solid #7d9ec0;
+            margin-top: 8px;
+            display: inline-block;
+        }
+        .logout-area {
+            background: #162c43;
+            border-radius: 60px;
+            padding: 0.5rem 2rem;
+            border: 1px solid #4b77a5;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #bfdefa;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .accounts-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+        .account-module {
+            flex: 1 1 230px;
+            border-radius: 2rem;
+            padding: 1.8rem 1.8rem;
+            box-shadow: 0 25px 35px -12px #00000080;
+            border-left: 5px solid;
+        }
+        .account-module:nth-child(1) { background: linear-gradient(145deg, #152e48, #0d2238); border-left-color: #3b9eff; }
+        .account-module:nth-child(2) { background: linear-gradient(145deg, #1d3a3a, #0f2a2a); border-left-color: #2ecc71; }
+        .account-module:nth-child(3) { background: linear-gradient(145deg, #41321c, #2e2413); border-left-color: #f1c40f; }
+        .account-module:nth-child(4) { background: linear-gradient(145deg, #3d2745, #25172b); border-left-color: #bb8fce; }
+        .account-module h3 { color: #d5ecff; }
+        .account-module .balance { font-size: 2rem; font-weight: 700; color: white; }
+        .security-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #0e223a;
+            border-radius: 60px;
+            padding: 0.8rem 2rem;
+            margin-bottom: 2.2rem;
+            border: 1px solid #6c8fb0;
+        }
+        .sec-btn {
+            background: #2b5797;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.8rem 2.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .function-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .transfer-panel {
+            flex: 2 1 500px;
+            background: #142b42;
+            border-radius: 2.2rem;
+            padding: 2rem;
+            border: 1px solid #3c6990;
+        }
+        .internal-transfer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .internal-select, .internal-input {
+            background: #1d3853;
+            border: 1px solid #5379a5;
+            border-radius: 60px;
+            padding: 0.9rem 1.5rem;
+            color: white;
+            flex: 1 1 150px;
+        }
+        .btn-primary {
+            background: #1f6fd0;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 60px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+        }
+        .pay-bills {
+            background: #1e3750;
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+        }
+        .crypto-pro {
+            flex: 1 1 320px;
+            background: #1a3149;
+            border-radius: 2rem;
+            padding: 2rem;
+            border: 1px solid #b8860b;
+        }
+        .crypto-input {
+            background: #1d3855;
+            border: none;
+            border-radius: 40px;
+            padding: 1rem 1.5rem;
+            color: white;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .btc-send-btn {
+            background: #d4a11e;
+            border: none;
+            border-radius: 40px;
+            padding: 1rem;
+            font-weight: 700;
+            color: #0b1c2c;
+            cursor: pointer;
+            width: 100%;
+        }
+        .trust-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .testimonials, .leadership {
+            background: #0b263f;
+            border-radius: 2rem;
+            padding: 2rem;
+            flex: 1;
+        }
+        .leader {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #1b3a59;
+            border-radius: 60px;
+            padding: 0.8rem 1.8rem;
+            margin: 10px 0;
+        }
+        .history-vault {
+            background: #10273e;
+            border-radius: 2rem;
+            padding: 2rem;
+        }
+        .receipt-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a3653;
+            margin: 8px 0;
+            padding: 1rem 1.8rem;
+            border-radius: 60px;
+            cursor: pointer;
+            border: 1px solid #5c85b5;
+        }
+        .receipt-item .status-badge {
+            background: #ffaa33;
+            color: black;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* transaction verification modal (6-digit for transfer) */
+        .verify-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2500;
+        }
+        .verify-content {
+            background: #112b44;
+            padding: 2.5rem;
+            border-radius: 3rem;
+            max-width: 450px;
+            width: 90%;
+            border: 2px solid gold;
+            color: white;
+        }
+        .verify-code-input {
+            background: #1d3855;
+            border: 1px solid #6c8fb0;
+            border-radius: 60px;
+            padding: 1.2rem;
+            width: 100%;
+            font-size: 1.8rem;
+            text-align: center;
+            letter-spacing: 8px;
+            color: white;
+            margin: 20px 0;
+        }
+        .receipt-modal { /* reuse existing modal style */ }
+    </style>
+</head>
+<body>
+<div class="bank-enterprise">
+    <!-- LANDING PAGE (visible initially) -->
+    <div id="landingPage" class="landing-page">
+        <div class="logo-area">
+            <i class="fas fa-landmark logo-icon"></i>
+            <div class="logo-text">
+                <h1>Dawson Private Bank</h1>
+                <span class="license-badge"><i class="fas fa-certificate"></i> FDIC • NMLS #1628407</span>
+            </div>
+        </div>
+        <div class="landing-grid">
+            <div class="login-box">
+                <h2><i class="fas fa-lock"></i> client login</h2>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="Username" value="DerrickAD26">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="loginPassword" placeholder="Password">
+                </div>
+                <button class="login-btn" id="loginBtn"><i class="fas fa-arrow-right"></i> authenticate</button>
+                <p style="margin-top:20px; color:#aac9ff;"><i class="fas fa-shield"></i> 256-bit SSL · biometric ready</p>
+            </div>
+            <div class="testimony-box">
+                <h3><i class="fas fa-star" style="color:gold;"></i> client testimony</h3>
+                <div class="testimony-card">
+                    <i class="fas fa-quote-left" style="color:gold;"></i> The most secure private bank I've used. Their 6‑code verification gives me peace of mind.
+                    <div style="margin-top:10px;">— Elaine R., Artemis Foundation</div>
+                </div>
+                <div class="testimony-card">
+                    <i class="fas fa-quote-left" style="color:gold;"></i> Seamless Bitcoin and Zelle, with permanent receipts. Best in class.
+                    <div>— Marcus T., Nexum Capital</div>
+                </div>
+            </div>
+        </div>
+        <div class="license-footer">
+            <span><i class="fas fa-check-circle" style="color:#2ecc71;"></i> Member FDIC</span>
+            <span><i class="fas fa-check-circle"></i> Equal Housing Lender</span>
+            <span><i class="fas fa-check-circle"></i> audited annually</span>
+        </div>
+    </div>
+
+    <!-- 2FA MODAL (after login) -->
+    <div id="twofaModal" class="twofa-modal">
+        <div class="twofa-content">
+            <h2><i class="fas fa-shield-halved"></i> second factor required</h2>
+            <p>Enter the 6-digit code from your authenticator</p>
+            <input type="text" id="twofaCode" class="code-input" maxlength="6" placeholder="------">
+            <button class="login-btn" id="verify2faBtn">verify & access</button>
+            <p style="margin-top:15px;"><i class="fas fa-info-circle"></i> any 6-digit code is accepted (demo)</p>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD (hidden initially) -->
+    <div id="dashboardMain" class="dashboard">
+        <!-- exactly same dashboard structure as previous, with enhancements -->
+        <div class="license-bar">
+            <div class="fdic-badge"><i class="fas fa-shield-alt"></i> <span>DAWSON PRIVATE BANK • MEMBER FDIC</span></div>
+            <div class="license-number"><i class="fas fa-certificate"></i> LICENSE #2784-0C · NMLS ID 1628407</div>
+        </div>
+        <div class="top-bar">
+            <div class="user-greeting">
+                <h1><i class="fas fa-crown"></i> Derrick A. Dawson</h1>
+                <div class="badge"><i class="fas fa-user-lock"></i> DerrickAD26  ·  private client</div>
+            </div>
+            <div class="logout-area">
+                <span style="color:#c3dfff;"><i class="fas fa-clock"></i> last login: just now</span>
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> secure logout</button>
+            </div>
+        </div>
+        <div class="accounts-showcase">
+            <div class="account-module"><h3><i class="fas fa-check-circle" style="color:#3b9eff;"></i> CHECKING</h3><div class="balance" id="checkingBalance">$27,840,700.00</div><small>main account</small></div>
+            <div class="account-module"><h3><i class="fas fa-leaf" style="color:#2ecc71;"></i> WEALTH SAVINGS</h3><div class="balance">$4,230,900.00</div><small>2.85% APY</small></div>
+            <div class="account-module"><h3><i class="fas fa-coins" style="color:#f1c40f;"></i> CRYPTO HOLDINGS</h3><div class="balance">$1,820,450.00</div><small>BTC/ETH</small></div>
+            <div class="account-module"><h3><i class="fas fa-gem" style="color:#bb8fce;"></i> PRIVATE RESERVE</h3><div class="balance">$8,500,000.00</div><small>wealth mgmt</small></div>
+        </div>
+        <div class="security-row">
+            <button class="sec-btn" id="securityToggle"><i class="fas fa-shield-halved"></i> SECURITY CONTROL</button>
+            <div class="sec-status" id="secStatus"><i class="fas fa-lock-open" style="color:#2ecc71;"></i> session active · 2FA enabled</div>
+        </div>
+
+        <!-- function grid with additional account fields -->
+        <div class="function-grid">
+            <div class="transfer-panel">
+                <h2><i class="fas fa-arrow-right-arrow-left"></i> Transfer & payments</h2>
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#b8d6ff;">recipient details (real bank format)</h3>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <input type="text" id="recipientAccount" class="internal-input" placeholder="account number" style="flex:2;">
+                        <input type="text" id="recipientRouting" class="internal-input" placeholder="routing number" style="flex:1;">
+                    </div>
+                </div>
+                <div class="internal-transfer">
+                    <select class="internal-select" id="fromAccount">
+                        <option value="checking">Checking (x8407)</option>
+                        <option value="savings">Savings (x2300)</option>
+                    </select>
+                    <input type="number" id="transferAmount" class="internal-input" placeholder="0.00" step="0.01">
+                    <button class="btn-primary" id="transferBtn"><i class="fas fa-paper-plane"></i> Transfer</button>
+                </div>
+                <div class="pay-bills">
+                    <h3 style="color:#eab676;"><i class="fas fa-file-invoice"></i> Bill pay (American banks)</h3>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <select id="payeeBank" style="background:#1d3855; color:white; border-radius:40px; padding:0.8rem 1.5rem; flex:2;">
+                            <option>Chase</option><option>Bank of America</option><option>Wells Fargo</option><option>Citibank</option><option>PNC</option><option>US Bank</option><option>Truist</option><option>Capital One</option><option>TD Bank</option><option>Ally</option><option>Goldman Sachs</option><option>Morgan Stanley</option>
+                        </select>
+                        <input type="number" id="billAmount" placeholder="amount" style="background:#1d3855; border:none; border-radius:40px; padding:0.8rem 1.5rem; color:white; flex:1;">
+                        <button class="btn-primary" id="payBillBtn">Pay</button>
+                    </div>
+                </div>
+            </div>
+            <div class="crypto-pro">
+                <h2 style="color:#f4c542;"><i class="fa-brands fa-bitcoin"></i> Bitcoin transfer</h2>
+                <div class="btc-rate">1 BTC ≈ $63,420 · balance: 0.438 BTC</div>
+                <input type="text" class="crypto-input" id="btcAddress" placeholder="BTC recipient address" value="bc1qderrickad26">
+                <input type="number" class="crypto-input" id="btcSendAmount" placeholder="BTC amount (e.g. 0.05)">
+                <button class="btc-send-btn" id="sendBtcBtn"><i class="fa-brands fa-bitcoin"></i> Sign & send Bitcoin</button>
+            </div>
+        </div>
+
+        <div class="trust-section">
+            <div class="testimonials">
+                <h3><i class="fas fa-star" style="color:gold;"></i> client testimony</h3>
+                <div class="testimonial-card" style="background:#1d3e60; border-radius:1.5rem; padding:1.5rem; color:#e1f0ff;">
+                    <i class="fas fa-quote-left" style="color:gold;"></i> Dawson Private Bank handles my foundation’s billions with absolute transparency.
+                    <div style="margin-top:10px;">— Elaine R., Artemis Foundation</div>
+                </div>
+            </div>
+            <div class="leadership">
+                <h3><i class="fas fa-user-tie"></i> leadership</h3>
+                <div class="leader"><i class="fas fa-user-circle"></i> <div><strong>Derrick A. Dawson</strong><br>Founder & Chairman</div></div>
+                <div class="leader"><i class="fas fa-user-tie"></i> <div><strong>Sarah K. Chen</strong><br>President, Wealth Mgmt</div></div>
+            </div>
+        </div>
+
+        <div class="history-vault">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                <i class="fas fa-receipt" style="color:#fedb5f; font-size:2rem;"></i>
+                <h2 style="color:white;">permanent receipts (click any)</h2>
+            </div>
+            <ul class="receipt-list" id="transactionList"></ul>
+        </div>
+    </div>
+
+    <!-- 6-digit verification modal for transfers -->
+    <div id="verifyTransferModal" class="verify-modal">
+        <div class="verify-content">
+            <h2><i class="fas fa-shield-alt"></i> transaction verification</h2>
+            <p>Enter 6-digit code to authorize (cannot reuse)</p>
+            <input type="text" id="transferVerifyCode" class="verify-code-input" maxlength="6" placeholder="------">
+            <button class="login-btn" id="submitTransferCode">confirm & send</button>
+            <p style="margin-top:15px;" id="verifyError" style="color:#ffaa33;"></p>
+        </div>
+    </div>
+
+    <!-- receipt detail modal (same as before) -->
+    <div id="receiptModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:3000;">
+        <div class="modal-content" style="background:#112b44; padding:2.5rem; border-radius:3rem; max-width:500px; color:white; border:2px solid gold;">
+            <span class="close-modal" id="closeModal" style="float:right; font-size:2rem; cursor:pointer;">&times;</span>
+            <h2><i class="fas fa-receipt"></i> transaction receipt</h2>
+            <div id="modalReceiptDetails" style="margin-top:25px; font-size:1.2rem;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- GLOBAL DATA ----------
+        const STORAGE_KEY = 'derrick_ad26_tx_history';
+        const BALANCE_KEY = 'derrick_checking_balance';
+        const USED_CODES_KEY = 'derrick_used_6digit_codes';
+
+        let txHistory = [];
+        let checkingBalance = 27840700.00;
+        let usedCodes = new Set(); // store used 6-digit codes (string)
+
+        // Load used codes from localStorage
+        function loadUsedCodes() {
+            const stored = localStorage.getItem(USED_CODES_KEY);
+            if (stored) {
+                try { usedCodes = new Set(JSON.parse(stored)); } catch(e){ usedCodes = new Set(); }
+            } else {
+                usedCodes = new Set();
+            }
+        }
+        function saveUsedCodes() {
+            localStorage.setItem(USED_CODES_KEY, JSON.stringify(Array.from(usedCodes)));
+        }
+
+        // Transaction storage
+        function loadStorage() {
+            const savedHistory = localStorage.getItem(STORAGE_KEY);
+            if (savedHistory) {
+                try { txHistory = JSON.parse(savedHistory); } catch(e){ txHistory = []; }
+            } else {
+                const now = new Date();
+                txHistory = [
+                    { id: 'r1', date: now.toISOString(), description: 'Opening deposit (wire)', amount: '+27840700.00', type: 'credit', impact: 27840700, displayTime: 'Jan 3, 2026 · 09:42', status: 'completed' },
+                    { id: 'r2', date: new Date(now.getTime() - 86400000).toISOString(), description: 'Zelle® to JPMorgan Chase', amount: '-12500.00', type: 'debit', impact: -12500, displayTime: 'Mar 1, 2026 · 14:17', status: 'completed' },
+                ];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(txHistory));
+            }
+            const savedBalance = localStorage.getItem(BALANCE_KEY);
+            if (savedBalance) {
+                checkingBalance = parseFloat(savedBalance);
+                if (isNaN(checkingBalance)) checkingBalance = 27840700.00;
+            } else {
+                checkingBalance = 27840700.00;
+                localStorage.setItem(BALANCE_KEY, checkingBalance.toFixed(2));
+            }
+        }
+
+        function persistAll() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(txHistory));
+            localStorage.setItem(BALANCE_KEY, checkingBalance.toFixed(2));
+            updateUiBalance();
+            renderHistory();
+        }
+
+        function addTransaction(desc, amountChange, status = 'processing') {
+            const now = new Date();
+            const changeNum = parseFloat(amountChange);
+            if (isNaN(changeNum)) return;
+            checkingBalance += changeNum;
+            checkingBalance = Math.round(checkingBalance * 100) / 100;
+            const sign = changeNum > 0 ? '+' : '';
+            const amountStr = sign + changeNum.toFixed(2);
+            const formattedTime = now.toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+            const newTx = {
+                id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+                date: now.toISOString(),
+                description: desc,
+                amount: amountStr,
+                type: changeNum > 0 ? 'credit' : 'debit',
+                impact: changeNum,
+                displayTime: formattedTime,
+                status: status, // 'processing' or 'completed'
+            };
+            txHistory.unshift(newTx);
+            persistAll();
+        }
+
+        function updateUiBalance() {
+            const balSpan = document.getElementById('checkingBalance');
+            if (balSpan) balSpan.innerText = '$' + checkingBalance.toFixed(2);
+        }
+
+        function renderHistory() {
+            const listEl = document.getElementById('transactionList');
+            if (!listEl) return;
+            if (txHistory.length === 0) { listEl.innerHTML = '<div style="color:#aaa;">No transactions</div>'; return; }
+            let htmlStr = '';
+            txHistory.forEach((tx, idx) => {
+                const timeStr = tx.displayTime || new Date(tx.date).toLocaleString('en-US',{month:'short',day:'numeric', hour:'2-digit', minute:'2-digit'});
+                const icon = tx.amount.startsWith('+') ? 'fa-circle-up' : 'fa-circle-down';
+                const statusClass = (tx.status === 'processing') ? 'status-badge' : '';
+                const statusText = (tx.status === 'processing') ? 'processing' : 'completed';
+                htmlStr += `<li class="receipt-item" data-idx="${idx}" data-id="${tx.id}">
+                    <div><i class="fas fa-receipt"></i> ${tx.description.substring(0,25)}... <span class="${statusClass}" style="background:${tx.status==='processing'?'#ffaa33':'#2ecc71'}; color:black; padding:2px 8px; border-radius:20px; margin-left:8px;">${statusText}</span></div>
+                    <div><span style="font-weight:700; ${tx.amount.startsWith('+')?'color:#8affb8':'color:#ffa7a7'}">$${tx.amount}</span> <span style="color:#9bbce0; margin-left:10px;">${timeStr}</span></div>
+                </li>`;
+            });
+            listEl.innerHTML = htmlStr;
+
+            document.querySelectorAll('.receipt-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const idx = this.getAttribute('data-idx');
+                    if (idx !== null && txHistory[idx]) {
+                        showReceiptModal(txHistory[idx]);
+                    }
+                });
+            });
+        }
+
+        // Receipt modal
+        const modal = document.getElementById('receiptModal');
+        const modalDetails = document.getElementById('modalReceiptDetails');
+        const closeModal = document.getElementById('closeModal');
+        closeModal.onclick = function() { modal.style.display = 'none'; };
+        window.onclick = function(event) { if (event.target == modal) modal.style.display = 'none'; };
+
+        function showReceiptModal(tx) {
+            const dateStr = new Date(tx.date).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' });
+            const statusColor = (tx.status === 'processing') ? '#ffaa33' : '#2ecc71';
+            modalDetails.innerHTML = `
+                <p><strong>TX ID:</strong> ${tx.id.substring(0,16)}... </p>
+                <p><strong>description:</strong> ${tx.description}</p>
+                <p><strong>amount:</strong> <span style="color:${tx.amount.startsWith('+')?'#8affb8':'#ffa7a7'}">$${tx.amount}</span></p>
+                <p><strong>timestamp:</strong> ${dateStr}</p>
+                <p><strong>status:</strong> <span style="color:${statusColor};">${tx.status || 'completed'}</span> · permanent record</p>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        // ---------- LOGIN FLOW ----------
+        const landing = document.getElementById('landingPage');
+        const twofaModal = document.getElementById('twofaModal');
+        const dashboard = document.getElementById('dashboardMain');
+        const loginBtn = document.getElementById('loginBtn');
+        const verify2fa = document.getElementById('verify2faBtn');
+
+        loginBtn.addEventListener('click', function() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const pwd = document.getElementById('loginPassword').value.trim();
+            if (username === 'DerrickAD26' && pwd !== '') {
+                landing.style.display = 'none';
+                twofaModal.style.display = 'flex';
+            } else {
+                alert('Invalid credentials (use DerrickAD26 / any password)');
+            }
+        });
+
+        verify2fa.addEventListener('click', function() {
+            const code = document.getElementById('twofaCode').value.trim();
+            if (code.length === 6 && /^\d+$/.test(code)) {
+                twofaModal.style.display = 'none';
+                dashboard.style.display = 'block';
+                loadStorage();
+                loadUsedCodes();
+                updateUiBalance();
+                renderHistory();
+            } else {
+                alert('Please enter a valid 6-digit code');
+            }
+        });
+
+        // ---------- 6-DIGIT VERIFICATION FOR TRANSFERS (with reuse protection) ----------
+        let pendingTransaction = null; // store transaction params to execute after code verify
+
+        const verifyModal = document.getElementById('verifyTransferModal');
+        const verifyCodeInput = document.getElementById('transferVerifyCode');
+        const submitCodeBtn = document.getElementById('submitTransferCode');
+        const verifyError = document.getElementById('verifyError');
+
+        function request6DigitCode(callback) {
+            // show modal, set pending to callback
+            pendingTransaction = callback;
+            verifyModal.style.display = 'flex';
+            verifyCodeInput.value = '';
+            verifyError.innerText = '';
+        }
+
+        submitCodeBtn.addEventListener('click', function() {
+            const code = verifyCodeInput.value.trim();
+            if (code.length !== 6 || !/^\d+$/.test(code)) {
+                verifyError.innerText = 'Enter a 6-digit number';
+                return;
+            }
+            if (usedCodes.has(code)) {
+                verifyError.innerText = 'This code has already been used. Please use another.';
+                return;
+            }
+            // mark as used
+            usedCodes.add(code);
+            saveUsedCodes();
+            verifyModal.style.display = 'none';
+            if (pendingTransaction) {
+                pendingTransaction(); // execute the transaction
+                pendingTransaction = null;
+            }
+        });
+
+        // close modal if clicked outside (optional)
+        window.addEventListener('click', (e) => {
+            if (e.target == verifyModal) verifyModal.style.display = 'none';
+        });
+
+        // ---------- WRAPPER FOR TRANSFER ACTIONS ----------
+        function with6DigitVerification(transactionFunc) {
+            request6DigitCode(transactionFunc);
+        }
+
+        // Transfer button
+        document.getElementById('transferBtn').addEventListener('click', function() {
+            let amount = parseFloat(document.getElementById('transferAmount').value);
+            if (isNaN(amount) || amount <= 0) return alert('Enter valid amount');
+            if (amount > checkingBalance) return alert('Insufficient balance');
+            const from = document.getElementById('fromAccount').value;
+            const account = document.getElementById('recipientAccount').value.trim() || '12345678';
+            const routing = document.getElementById('recipientRouting').value.trim() || '021000021';
+            with6DigitVerification(function() {
+                addTransaction(`Transfer $${amount} to acct ${account} (routing ${routing})`, -amount, 'processing');
+                alert('Transfer initiated (processing)');
+            });
+        });
+
+        // Bill pay
+        document.getElementById('payBillBtn').addEventListener('click', function() {
+            let amt = parseFloat(document.getElementById('billAmount').value);
+            if (isNaN(amt) || amt <= 0) return alert('Enter amount');
+            if (amt > checkingBalance) return alert('Insufficient');
+            const bank = document.getElementById('payeeBank').value;
+            with6DigitVerification(function() {
+                addTransaction(`Bill payment to ${bank}`, -amt, 'processing');
+                alert(`Payment to ${bank} is processing`);
+            });
+        });
+
+        // Bitcoin send
+        document.getElementById('sendBtcBtn').addEventListener('click', function() {
+            let btc = parseFloat(document.getElementById('btcSendAmount').value);
+            if (isNaN(btc) || btc <= 0) return alert('Enter BTC amount');
+            let usdValue = btc * 63420;
+            if (usdValue > checkingBalance) return alert('Insufficient');
+            const addr = document.getElementById('btcAddress').value;
+            with6DigitVerification(function() {
+                addTransaction(`Bitcoin ${btc.toFixed(4)} BTC to ${addr.substring(0,10)}…`, -usdValue, 'processing');
+                alert('Bitcoin transfer is processing');
+            });
+        });
+
+        // Security toggle (just for show)
+        document.getElementById('securityToggle')?.addEventListener('click', function(){
+            const statusDiv = document.getElementById('secStatus');
+            if (statusDiv.innerHTML.includes('active')) {
+                statusDiv.innerHTML = '<i class="fas fa-shield" style="color:#ffaa33;"></i> enhanced lockdown · 2FA pending';
+            } else {
+                statusDiv.innerHTML = '<i class="fas fa-lock-open" style="color:#2ecc71;"></i> session active · 2FA enabled';
+            }
+        });
+
+        // logout
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            alert('Logged out securely.');
+            dashboard.style.display = 'none';
+            landing.style.display = 'block';
+        });
+
+        // initial load: show landing, dashboard hidden
+        window.onload = function() {
+            landing.style.display = 'block';
+            dashboard.style.display = 'none';
+            twofaModal.style.display = 'none';
+            verifyModal.style.display = 'none';
+            loadUsedCodes(); // preload used codes
+        };
+    })();
+</script>
+<!-- Name: Derrick A Dawson | username: DerrickAD26 | no original HTML removed -->
+</body>
+</html>
